@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/pups', methods=['GET'])
 
-def innercircle():
+def pups():
     return render_template('index.html')
 
 if __name__ == '__main__':
