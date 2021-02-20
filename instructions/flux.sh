@@ -1,3 +1,5 @@
+# https://docs.fluxcd.io/en/latest/tutorials/get-started/
+
 # Install fluxctl
 choco install fluxctl
 
