@@ -25,6 +25,7 @@ fluxctl identity --k8s-fwd-ns flux
 
 # Flux sync
 By default, Flux sync every five minutes. If you want to manually sync Flux, run the following:
+
 fluxctl sync --k8s-fwd-ns flux
 
 # List workflows
