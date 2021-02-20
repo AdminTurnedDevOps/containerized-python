@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: pupweb
 spec:
+  selector:
+    matchLabels:
+      app: pupweb
   replicas: 2
   template:
     metadata:
