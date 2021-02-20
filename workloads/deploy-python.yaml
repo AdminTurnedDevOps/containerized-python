@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: pupweb
-  replicas: 4
+  replicas: 6
   template:
     metadata:
       labels:
