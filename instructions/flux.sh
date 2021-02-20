@@ -8,9 +8,9 @@ az aks get-credentials -g az-400 -n name_of_aks_cluster
 kubectl create namespace flux
 
 # Install flux
-fluxctl install --git-user=AdminTurnedDevOps --git-email=AdminTurnedDevOps@users.noreply.github.com --git-url=git@github.com:AdminTurnedDevOps/containerized-python.git --git-path=namespaces,workloads --namespace=flux | kubectl apply -f -
+fluxctl install --git-user=AdminTurnedDevOps --git-email=AdminTurnedDevOps@users.noreply.github.com --git-url=git@github.com:AdminTurnedDevOps/containerized-python.git --git-path=workloads --namespace=flux | kubectl apply -f -
 
-From the above command, you can see that there is a `--git-path` with two paths, namespaces and workloads. `Flux` expects to see the Kubernetes manifest files in one of these directories. Ensure to put your manifests in the `workloads` directory, or if you want to use a different directory in GitHub, change the git path.
+From the above command, you can see that there is a `--git-path` with one path, workloads. `Flux` expects to see the Kubernetes manifest files in this directory. Ensure to put your manifests in the `workloads` directory, or if you want to use a different directory in GitHub, change the git path.
 
 # Check deployment status
 kubectl -n flux rollout status deployment/flux
