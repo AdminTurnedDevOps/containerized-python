@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: pupweb
-        image: fluxtestregistry.azurecr.io/pupweb/pubweb:latest
+        image: fluxtestregistry.azurecr.io/pupweb/pubweb
         ports:
         - containerPort: 5000
 ---
