@@ -1,0 +1,63 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - uses: actions/checkout@master
+    
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Create ACR
+      id: create-acr
+      run: |
+        az acr create -n nginx922 -g nginx9228a94-rg --location "East US" --sku Standard --admin-enabled
+        echo "::set-output name=acr_username::`az acr credential show -n nginx922 --query username | xargs`"
+        echo "::set-output name=acr_password::`az acr credential show -n nginx922 --query passwords[0].value | xargs`"
+        echo "::add-mask::`az acr credential show -n nginx922 --query passwords[0].value | xargs`"
+
+    - uses: azure/docker-login@v1
+      with:
+        login-server: nginx922.azurecr.io
+        username: ${{ steps.create-acr.outputs.acr_username }}
+        password: ${{ steps.create-acr.outputs.acr_password }}
+
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/." -f  "Dockerfile-dir/Dockerfile" -t nginx922.azurecr.io/cicdnginx:${{ github.sha }} --label dockerfile-path=Dockerfile-dir/Dockerfile
+        docker push nginx922.azurecr.io/cicdnginx:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      id: login
+      with:
+         kubeconfig: ${{ secrets.aks_cicdnginx_kubeConfig }}
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep cicd-nginx8c3e | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace cicd-nginx8c3e`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: cicd-nginx8c3e
+        container-registry-url: nginx922.azurecr.io
+        container-registry-username: ${{ steps.create-acr.outputs.acr_username }}
+        container-registry-password: ${{ steps.create-acr.outputs.acr_password }}
+        secret-name: cicdnginxdockerauth
+       
+    - uses: azure/k8s-deploy@v1.2
+      with:
+        namespace: cicd-nginx8c3e
+        manifests: |
+          manifests/deployment-1.yml
+          manifests/service-1.yml
+        images: |
+          nginx922.azurecr.io/cicdnginx:${{ github.sha }}
+        imagepullsecrets: |
+          cicdnginxdockerauth   
