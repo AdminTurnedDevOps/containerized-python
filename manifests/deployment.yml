@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "pythonbootcamp-f32a"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "pythonbootcamp-f32a"
+  template:
+    metadata:
+      labels:
+        app: "pythonbootcamp-f32a"
+    spec:
+      containers:
+        - name: "pythonbootcamp-f32a"
+          image: "python92.azurecr.io/pythonbootcamp"
+          ports:
+          - containerPort: 80
