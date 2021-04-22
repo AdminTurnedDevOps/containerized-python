@@ -3,7 +3,7 @@ FROM python:latest
 RUN mkdir /build
 WORKDIR /build
 
-COPY ../containerapp/ /build
+COPY ./containerapp/ /build
 
 COPY containerapp/requirements.txt /build
 
