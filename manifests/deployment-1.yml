@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "cicdnginx-0dc6"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "cicdnginx-0dc6"
+  template:
+    metadata:
+      labels:
+        app: "cicdnginx-0dc6"
+    spec:
+      containers:
+        - name: "cicdnginx-0dc6"
+          image: "nginx922.azurecr.io/cicdnginx"
+          ports:
+          - containerPort: 80
